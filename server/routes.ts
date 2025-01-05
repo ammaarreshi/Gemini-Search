@@ -1,9 +1,6 @@
-import type { Express } from "express";
-import { createServer, type Server } from "http";
 import {
   GoogleGenerativeAI,
-  type ChatSession,
-  type GenerateContentResult,
+  type ChatSession
 } from "@google/generative-ai";
 import { marked } from "marked";
 import { setupEnvironment } from "./env";
