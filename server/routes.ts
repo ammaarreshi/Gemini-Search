@@ -2,6 +2,8 @@ import {
   GoogleGenerativeAI,
   type ChatSession
 } from "@google/generative-ai";
+import type { Express } from "express";
+import { createServer, type Server } from "http";
 import { marked } from "marked";
 import { setupEnvironment } from "./env";
 
@@ -15,6 +17,8 @@ const model = genAI.getGenerativeModel({
     topK: 1,
     maxOutputTokens: 2048,
   },
+}, {
+  baseUrl: env.BASE_URL,
 });
 
 // Store chat sessions in memory
