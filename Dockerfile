@@ -9,6 +9,7 @@ COPY vite.config.ts ./
 COPY postcss.config.js ./
 COPY tailwind.config.ts ./
 COPY drizzle.config.ts ./
+COPY theme.json ./
 COPY client/ ./client/
 COPY server/ ./server/
 COPY db/ ./db/
