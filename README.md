@@ -67,6 +67,7 @@ Created by [@ammaar](https://x.com/ammaar)
 
 - `GOOGLE_API_KEY`: Your Google API key with access to Gemini API
 - `NODE_ENV`: Set to "development" by default, use "production" for production builds
+- `PORT`: Server port (defaults to 3000)
 
 ## Development
 
