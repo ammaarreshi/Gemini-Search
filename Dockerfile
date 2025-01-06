@@ -28,8 +28,8 @@ COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/db ./db
 
-# 仅安装生产环境依赖
-RUN npm ci --production
+# 安装生产环境依赖，并确保包含 vite
+RUN npm ci && npm install vite
 
 # 设置环境变量
 ENV NODE_ENV=production
