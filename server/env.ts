@@ -7,16 +7,12 @@ const __dirname = path.dirname(__filename);
 const envPath = path.resolve(__dirname, "../.env");
 
 export function setupEnvironment() {
-  const result = dotenv.config({ path: envPath });
-  if (result.error) {
-    throw new Error(
-      `Failed to load .env file from ${envPath}: ${result.error.message}`
-    );
-  }
+  // 尝试加载 .env 文件，但不强制要求
+  dotenv.config({ path: envPath });
 
   if (!process.env.GOOGLE_API_KEY) {
     throw new Error(
-      "GOOGLE_API_KEY environment variable must be set in .env file"
+      "GOOGLE_API_KEY environment variable must be set"
     );
   }
 
