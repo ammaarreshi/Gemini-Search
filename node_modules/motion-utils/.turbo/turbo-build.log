@@ -1,9 +1,0 @@
-[36m
-[1mlib/index.js[22m → [1mdist/cjs[22m...[39m
-[32mcreated [1mdist/cjs[22m in [1m18ms[22m[39m
-[36m
-[1mlib/index.js[22m → [1mdist/es[22m...[39m
-[32mcreated [1mdist/es[22m in [1m7ms[22m[39m
-[36m
-[1mtypes/index.d.ts[22m → [1mdist/index.d.ts[22m...[39m
-[32mcreated [1mdist/index.d.ts[22m in [1m11ms[22m[39m
