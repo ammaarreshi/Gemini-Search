@@ -114,14 +114,19 @@ export function registerRoutes(app: Express): Server {
         });
       }
 
+      const searchTool = env.BASE_URL === "https://ground.search1api.com" 
+        ? {
+            search1api: {
+              apiKey: env.SEARCH1_API_KEY
+            }
+          }
+        : {
+            google_search: {}
+          };
+
       // Create a new chat session with search capability
       const chat = model.startChat({
-        tools: [
-          {
-            // @ts-ignore - search tool is not typed in the SDK yet
-            [env.BASE_URL === "https://ground.search1api.com" ? "search1api" : "google_search"]: {},
-          },
-        ],
+        tools: [searchTool as any],
       });
 
       // Generate content with search tool
