@@ -14,6 +14,7 @@ services:
       - NODE_ENV=production
       - GOOGLE_API_KEY=${GOOGLE_API_KEY:?GOOGLE_API_KEY is required}
       - BASE_URL=${BASE_URL:-https://generativelanguage.googleapis.com}
+      - SEARCH1_API_KEY=${SEARCH1_API_KEY:-}
       - PORT=${PORT:-3000}
     restart: unless-stopped
     healthcheck:
