@@ -10,15 +10,112 @@ import { setupEnvironment } from "./env";
 
 const env = setupEnvironment();
 const genAI = new GoogleGenerativeAI(env.GOOGLE_API_KEY);
-const model = genAI.getGenerativeModel({
-  model: "gemini-2.0-flash-exp",
-  generationConfig: {
-    temperature: 0.9,
-    topP: 1,
-    topK: 1,
-    maxOutputTokens: 2048,
-  },
-});
+
+function createSearch1ApiModel() {
+  return {
+    startChat: (config: any): ChatSession => {
+      const tools = [{
+        search1api: {}
+      }];
+      
+      const history: Array<{role: string, parts: Array<{text: string}>}> = [];
+      
+      const chat = {
+        sendMessage: async (message: string) => {
+          // 添加用户消息到历史
+          history.push({
+            role: "user",
+            parts: [{ text: message }]
+          });
+
+          const response = await fetch('https://ground.search1api.com/v1beta/models/gemini-2.0-flash-exp:generateContent', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'x-goog-api-key': env.GOOGLE_API_KEY
+            },
+            body: JSON.stringify({
+              contents: history,
+              tools,
+              generationConfig: {
+                temperature: 0.9,
+                topP: 1,
+                topK: 1,
+                maxOutputTokens: 2048,
+              }
+            })
+          });
+          
+          if (!response.ok) {
+            throw new Error(`API request failed: ${response.statusText}`);
+          }
+          
+          const data = await response.json();
+          console.log('API Response:', JSON.stringify(data, null, 2));
+          
+          if (!data || !data.candidates?.[0]?.content?.parts?.[0]?.text) {
+            throw new Error('Invalid API response format');
+          }
+
+          // 添加模型响应到历史
+          history.push(data.candidates[0].content);
+          
+          return {
+            response: {
+              text: () => data.candidates[0].content.parts[0].text,
+              candidates: data.candidates.map((candidate: {
+                content: {
+                  parts: Array<{ text: string }>;
+                  role: string;
+                };
+                finishReason: string;
+                groundingMetadata?: {
+                  groundingChunks: Array<{
+                    web?: {
+                      uri: string;
+                      title: string;
+                    };
+                  }>;
+                  groundingSupports: Array<{
+                    segment: {
+                      startIndex: number;
+                      endIndex: number;
+                      text: string;
+                    };
+                    groundingChunkIndices: number[];
+                    confidenceScores: number[];
+                  }>;
+                  webSearchQueries?: string[];
+                };
+              }) => ({
+                content: candidate.content,
+                finishReason: candidate.finishReason,
+                groundingMetadata: candidate.groundingMetadata
+              }))
+            }
+          };
+        },
+        model: "search1api-model",
+        _requestOptions: {},
+        _apiKey: env.GOOGLE_API_KEY
+      } as unknown as ChatSession;
+      
+      return chat;
+    }
+  };
+}
+
+const model = env.SERVICE === "gemini_ground" 
+  ? genAI.getGenerativeModel({
+      model: "gemini-2.0-flash-exp",
+      generationConfig: {
+        temperature: 0.9,
+        topP: 1,
+        topK: 1,
+        maxOutputTokens: 2048,
+      },
+    })
+  : createSearch1ApiModel();
 
 // Store chat sessions in memory
 const chatSessions = new Map<string, ChatSession>();
@@ -117,8 +214,8 @@ export function registerRoutes(app: Express): Server {
       const chat = model.startChat({
         tools: [
           {
-            // @ts-ignore - google_search is a valid tool but not typed in the SDK yet
-            google_search: {},
+            // @ts-ignore
+            [env.SERVICE === "gemini_ground" ? "google_search" : "search1api"]: {},
           },
         ],
       });
