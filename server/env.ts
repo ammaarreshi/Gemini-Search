@@ -23,6 +23,6 @@ export function setupEnvironment() {
   return {
     GOOGLE_API_KEY: process.env.GOOGLE_API_KEY,
     NODE_ENV: process.env.NODE_ENV || "development",
-    SERVICE: process.env.SERVICE || "gemini_ground",
+    BASE_URL: process.env.BASE_URL || "https://generativelanguage.googleapis.com",
   };
 }
