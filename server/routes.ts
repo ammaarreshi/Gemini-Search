@@ -1,10 +1,9 @@
-import type { Express } from "express";
-import { createServer, type Server } from "http";
 import {
   GoogleGenerativeAI,
-  type ChatSession,
-  type GenerateContentResult,
+  type ChatSession
 } from "@google/generative-ai";
+import type { Express } from "express";
+import { createServer, type Server } from "http";
 import { marked } from "marked";
 import { setupEnvironment } from "./env";
 
@@ -18,6 +17,8 @@ const model = genAI.getGenerativeModel({
     topK: 1,
     maxOutputTokens: 2048,
   },
+}, {
+  baseUrl: env.BASE_URL,
 });
 
 // Store chat sessions in memory
@@ -113,14 +114,19 @@ export function registerRoutes(app: Express): Server {
         });
       }
 
+      const searchTool = env.BASE_URL === "https://ground.search1api.com" 
+        ? {
+            search1api: {
+              apiKey: env.SEARCH1_API_KEY
+            }
+          }
+        : {
+            google_search: {}
+          };
+
       // Create a new chat session with search capability
       const chat = model.startChat({
-        tools: [
-          {
-            // @ts-ignore - google_search is a valid tool but not typed in the SDK yet
-            google_search: {},
-          },
-        ],
+        tools: [searchTool as any],
       });
 
       // Generate content with search tool

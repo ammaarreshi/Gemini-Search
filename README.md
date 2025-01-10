@@ -30,6 +30,7 @@ Created by [@ammaar](https://x.com/ammaar)
 - Node.js (v18 or higher recommended)
 - npm or yarn
 - A Google API key with access to Gemini API
+- (Optional) A Search1API key for alternative search backend
 
 ### Installation
 
@@ -63,10 +64,36 @@ Created by [@ammaar](https://x.com/ammaar)
    http://localhost:3000
    ```
 
+### Docker Deployment
+
+1. Build and run with docker-compose:
+   ```bash
+   docker-compose up -d
+   ```
+
+2. Or run with custom port:
+   ```bash
+   PORT=3125 docker-compose up -d
+   ```
+
 ## Environment Variables
 
 - `GOOGLE_API_KEY`: Your Google API key with access to Gemini API
 - `NODE_ENV`: Set to "development" by default, use "production" for production builds
+- `PORT`: (Optional) Custom port for the server, defaults to 3000
+- `BASE_URL`: (Optional) Custom Gemini API endpoint
+- `SEARCH1_API_KEY`: (Optional) Required if using search1api tool instead of Google Search
+
+## Search Tools
+
+The project supports two search backends:
+1. **Google Search** (default): Uses Google's built-in search capability
+2. **Search1API**: An alternative search backend ([search1api.com](https://search1api.com)) that:
+   - Costs 5x less than Google Search
+   - Response time is 2x slower than Google Search
+   - Requires:
+     - Set `BASE_URL=https://ground.search1api.com`
+     - Set `SEARCH1_API_KEY=your_search1api_key`
 
 ## Development
 
