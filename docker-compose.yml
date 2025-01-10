@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - GOOGLE_API_KEY=${GOOGLE_API_KEY:?GOOGLE_API_KEY is required}
+        - PORT=${PORT:-3000}
+    ports:
+      - "${PORT:-3000}:${PORT:-3000}"
+    environment:
+      - NODE_ENV=production
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY:?GOOGLE_API_KEY is required}
+      - BASE_URL=${BASE_URL:-https://generativelanguage.googleapis.com}
+      - PORT=${PORT:-3000}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:${PORT:-3000}/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+networks:
+  default:
+    driver: bridge
