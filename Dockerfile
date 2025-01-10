@@ -27,8 +27,8 @@ WORKDIR /app
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/package*.json ./
 
-# 只安装生产依赖
-RUN npm ci --omit=dev
+# 安装生产依赖，确保包含 vite
+RUN npm ci --omit=dev && npm install vite@latest
 
 # 设置环境变量
 ENV NODE_ENV=production
