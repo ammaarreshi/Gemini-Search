@@ -67,6 +67,7 @@ Created by [@ammaar](https://x.com/ammaar)
 
 - `GOOGLE_API_KEY`: Your Google API key with access to Gemini API
 - `NODE_ENV`: Set to "development" by default, use "production" for production builds
+- `BASE_URL`: Set this to your own proxied API base URL (e.g., Cloudflare AI gateway endpoint). Defaults to 'https://generativelanguage.googleapis.com'.
 
 ## Development
 

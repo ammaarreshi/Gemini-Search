@@ -22,6 +22,7 @@ export function setupEnvironment() {
 
   return {
     GOOGLE_API_KEY: process.env.GOOGLE_API_KEY,
+    BASE_URL: process.env.BASE_URL || "https://generativelanguage.googleapis.com",
     NODE_ENV: process.env.NODE_ENV || "development",
   };
 }
